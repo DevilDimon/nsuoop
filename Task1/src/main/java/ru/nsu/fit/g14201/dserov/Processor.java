@@ -24,6 +24,6 @@ public class Processor {
         while ((word = reader.nextWord()) != null) {
             stat.acceptWord(word);
         }
-        report.generateReport(stat, output);
+        report.generateReport(stat, report.prepareReport(stat), output);
     }
 }

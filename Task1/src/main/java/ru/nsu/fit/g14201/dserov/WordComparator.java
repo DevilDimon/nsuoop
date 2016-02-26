@@ -6,9 +6,9 @@ import java.util.Map;
 /**
  * Created by dserov on 25/02/16.
  */
-public class WordComparator implements Comparator<Map.Entry<String, Integer>> {
+public class WordComparator implements Comparator<Map.Entry<String, Counter>> {
     @Override
-    public int compare(Map.Entry<String, Integer> o1, Map.Entry<String, Integer> o2) {
-        return Integer.compare(o2.getValue(), o1.getValue());
+    public int compare(Map.Entry<String, Counter> o1, Map.Entry<String, Counter> o2) {
+        return Integer.compare(o2.getValue().getCount(), o1.getValue().getCount());
     }
 }

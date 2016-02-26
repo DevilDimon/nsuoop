@@ -9,29 +9,33 @@ import java.io.InputStreamReader;
  */
 public class WordReader {
     private InputStreamReader stream;
+    private StringBuilder builder;
 
     public WordReader(InputStream stream) {
         this.stream = new InputStreamReader(stream);
+        builder = new StringBuilder(1000);
     }
 
     public String nextWord() {
         int c;
         boolean midWord = false;
-        StringBuilder buff = new StringBuilder();
+        builder.setLength(0);
         try {
             while ((c = stream.read()) != -1) {
-                if (!Character.isLetterOrDigit((char) c) && midWord) {
-                    return buff.toString();
-                }
-                if (Character.isLetterOrDigit((char) c)) {
-                    if (!midWord) {
-                        midWord = true;
+                if (!Character.isLetterOrDigit((char) c) ) {
+                    if ( midWord) {
+                        return builder.toString();
                     }
-                    buff.append((char) c);
+                }
+                else  {
+
+                    midWord = true;
+
+                    builder.append((char) c);
                 }
             }
-            if (!buff.toString().equals("")) {
-                return buff.toString();
+            if (!builder.toString().equals("")) {
+                return builder.toString();
             }
         } catch (IOException e) {
             System.err.println("Error while reading file: " + e.getLocalizedMessage());

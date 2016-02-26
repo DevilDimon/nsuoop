@@ -6,7 +6,7 @@ import java.util.*;
  * Created by dserov on 19/02/16.
  */
 public class WordStat {
-    private Map<String, Integer> dict;
+    private Map<String, Counter> dict;
     private int count;
 
     public WordStat() {
@@ -16,9 +16,9 @@ public class WordStat {
     public void acceptWord(String word) {
         count++;
         if (dict.containsKey(word)) {
-            dict.put(word, dict.get(word) + 1);
+            dict.put(word, dict.get(word).inc());
         } else {
-            dict.put(word, 1);
+            dict.put(word, new Counter(1, word));
         }
     }
 
@@ -26,14 +26,8 @@ public class WordStat {
         return count;
     }
 
-    public LinkedHashMap<String, Integer> asLinkedHashMap() {
-        List<Map.Entry<String, Integer>> list =  new ArrayList<>(dict.entrySet());
-        Collections.sort(list, new WordComparator());
-        LinkedHashMap<String, Integer> res = new LinkedHashMap<>();
-        for (Map.Entry<String, Integer> i : list) {
-            res.put(i.getKey(), i.getValue());
-        }
-        return res;
+    public Map<String, Counter> asMap() {
+        return dict;
     }
 
 
