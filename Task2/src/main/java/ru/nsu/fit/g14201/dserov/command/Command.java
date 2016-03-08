@@ -1,6 +1,7 @@
 package ru.nsu.fit.g14201.dserov.command;
 
 import ru.nsu.fit.g14201.dserov.Context;
+import ru.nsu.fit.g14201.dserov.exception.RuntimeCommandException;
 
 import java.util.regex.Pattern;
 
@@ -8,7 +9,7 @@ import java.util.regex.Pattern;
  * Created by dserov on 04/03/16.
  */
 public interface Command {
-    void exec(Context context);
+    void exec(Context context) throws RuntimeCommandException;
     static boolean isDouble(String arg) {
         final String Digits     = "(\\p{Digit}+)";
         final String HexDigits  = "(\\p{XDigit}+)";

@@ -1,10 +1,11 @@
 package ru.nsu.fit.g14201.dserov;
 
 import ru.nsu.fit.g14201.dserov.command.Command;
+import ru.nsu.fit.g14201.dserov.exception.CompileCommandException;
+import ru.nsu.fit.g14201.dserov.exception.WrongArgumentCountException;
 
 import java.io.*;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -15,7 +16,7 @@ import java.util.Map;
 public class CommandFactory {
     private Map<String, Class> commands;
 
-    public CommandFactory() {
+    public CommandFactory() throws IOException, ClassNotFoundException {
         commands = new HashMap<>();
         InputStream stream = getClass().getResourceAsStream("/commands.txt");
         StreamTokenizer tokenizer = new StreamTokenizer(new InputStreamReader(stream));
@@ -33,25 +34,22 @@ public class CommandFactory {
             }
         } catch (IOException | ClassNotFoundException e) {
             System.err.println("Error while initializing command list: " + e.getLocalizedMessage());
-            e.printStackTrace();
+            throw e;
         }
     }
 
-    public Command factoryMethod(String commandName, ArrayList<String> args) {
+    public Command factoryMethod(String commandName, ArrayList<String> args) throws CompileCommandException {
 
         try {
             Constructor ctor = commands.get(commandName).getDeclaredConstructor(ArrayList.class);
             ctor.setAccessible(true);
             return (Command) ctor.newInstance(args);
         } catch (NullPointerException e) {
-            System.err.println("Invalid token in command flow: " + commandName);
-            System.err.println("The command will be skipped.");
+            throw new CompileCommandException("No such command: " + commandName);
         }
-        catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
-            System.err.println("Error while handling command " + commandName +
-                    " The command will be skipped: " + e.getLocalizedMessage());
-            e.printStackTrace();
+        catch (ReflectiveOperationException e) {
+            throw new CompileCommandException(commandName +
+             ": " + e.getCause().getLocalizedMessage());
         }
-        return null;
     }
 }
