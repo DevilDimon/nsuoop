@@ -1,4 +1,6 @@
-package ru.nsu.fit.g14201.dserov.exception;
+package ru.nsu.fit.g14201.dserov.command;
+
+import ru.nsu.fit.g14201.dserov.command.CommandException;
 
 /**
  * Created by dserov on 06/03/16.

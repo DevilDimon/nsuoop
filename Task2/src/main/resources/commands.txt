@@ -1,0 +1,9 @@
++ ru.nsu.fit.g14201.dserov.Add
+DEFINE ru.nsu.fit.g14201.dserov.Define
+/ ru.nsu.fit.g14201.dserov.Divide
+* ru.nsu.fit.g14201.dserov.Multiply
+POP ru.nsu.fit.g14201.dserov.Pop
+PRINT ru.nsu.fit.g14201.dserov.Print
+PUSH ru.nsu.fit.g14201.dserov.Push
+SQRT ru.nsu.fit.g14201.dserov.SquareRoot
+- ru.nsu.fit.g14201.dserov.Subtract

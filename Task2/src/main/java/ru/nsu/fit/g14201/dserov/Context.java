@@ -1,7 +1,10 @@
 package ru.nsu.fit.g14201.dserov;
 
+import java.io.BufferedWriter;
 import java.io.OutputStream;
-import java.io.PrintWriter;
+import java.io.PrintStream;
+import java.io.Writer;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
@@ -10,18 +13,18 @@ import java.util.Stack;
  * Created by dserov on 04/03/16.
  */
 public class Context {
-    private Stack<Double> stack;
+    private ArrayList<Double> stack;
     private Map<String, Double> aliases;
-    private PrintWriter writer;
+    private Writer writer;
 
-    public Context(OutputStream output) {
-        stack = new Stack<>();
+    public Context(Writer output) {
+        stack = new ArrayList<>();
         aliases = new HashMap<>();
-        writer = new PrintWriter(output);
+        writer = output;
 
     }
 
-    public Stack<Double> getStack() {
+    public ArrayList<Double> getStack() {
         return stack;
     }
 
@@ -29,7 +32,7 @@ public class Context {
         return aliases;
     }
 
-    public PrintWriter getWriter() {
+    public Writer getWriter() {
         return writer;
     }
 

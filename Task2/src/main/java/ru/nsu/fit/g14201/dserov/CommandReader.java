@@ -1,9 +1,7 @@
 package ru.nsu.fit.g14201.dserov;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
-import java.io.StreamTokenizer;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -15,8 +13,8 @@ public class CommandReader {
     private String line;
     private Scanner linesc;
 
-    public CommandReader(InputStream stream) {
-        sc = new Scanner(stream);
+    public CommandReader(Reader input) {
+        sc = new Scanner(input);
         line = null;
         linesc = null;
     }
@@ -30,11 +28,11 @@ public class CommandReader {
     }
 
     public String nextCommandName() {
+        if (line.trim().startsWith("#") || line.trim().equals("")) return null;
         linesc = new Scanner(line);
         return linesc.next();
     }
 
-    // TODO: Limit for #
     public ArrayList<String> nextCommandArgs() {
         ArrayList<String> args = new ArrayList<>();
         while (linesc.hasNext()) {
