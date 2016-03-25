@@ -2,8 +2,8 @@ package ru.nsu.fit.g14201.dserov;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ru.nsu.fit.g14201.dserov.command.Command;
-import ru.nsu.fit.g14201.dserov.command.CompileCommandException;
+import ru.nsu.fit.g14201.dserov.core.Command;
+import ru.nsu.fit.g14201.dserov.core.CompileCommandException;
 
 import java.io.*;
 import java.lang.reflect.Constructor;
@@ -36,7 +36,7 @@ public class CommandFactory {
             }
         } catch (IOException | ClassNotFoundException e) {
             logger.error("Configurating from {}: failed to create object of class: {}", "commands.txt", tokenizer.sval);
-            System.err.println("Error while initializing command list: " + e.getLocalizedMessage());
+            System.err.println("Error while initializing core list: " + e.getLocalizedMessage());
             throw e; // TODO: remove to avoid exception handling in App.java?
         }
         logger.info("Configuration successfully completed");
@@ -45,8 +45,8 @@ public class CommandFactory {
     public Command factoryMethod(String commandName, ArrayList<String> args) throws CompileCommandException {
 
         if (commands.get(commandName) == null) {
-            logger.warn("Encountered command not present in config: {}", commandName);
-            throw new CompileCommandException("No such command: " + commandName);
+            logger.warn("Encountered core not present in config: {}", commandName);
+            throw new CompileCommandException("No such core: " + commandName);
         }
 
         try {

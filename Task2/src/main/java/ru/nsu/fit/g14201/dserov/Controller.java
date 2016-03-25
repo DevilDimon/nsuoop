@@ -2,12 +2,11 @@ package ru.nsu.fit.g14201.dserov;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ru.nsu.fit.g14201.dserov.command.Command;
-import ru.nsu.fit.g14201.dserov.command.CompileCommandException;
-import ru.nsu.fit.g14201.dserov.command.RuntimeCommandException;
+import ru.nsu.fit.g14201.dserov.core.Command;
+import ru.nsu.fit.g14201.dserov.core.CompileCommandException;
+import ru.nsu.fit.g14201.dserov.core.Context;
+import ru.nsu.fit.g14201.dserov.core.RuntimeCommandException;
 
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.ArrayList;
@@ -39,7 +38,7 @@ public class Controller {
                 commandFlow.add(command);
             }
             catch (CompileCommandException e) {
-                System.err.println("Error on line: " + line + ". The command will be skipped.");
+                System.err.println("Error on line: " + line + ". The core will be skipped.");
                 System.err.println(e.getLocalizedMessage());
             }
             line++;

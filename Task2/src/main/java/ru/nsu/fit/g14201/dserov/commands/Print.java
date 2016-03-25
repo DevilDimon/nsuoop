@@ -1,18 +1,15 @@
-package ru.nsu.fit.g14201.dserov;
+package ru.nsu.fit.g14201.dserov.commands;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ru.nsu.fit.g14201.dserov.Context;
-import ru.nsu.fit.g14201.dserov.command.Command;
-import ru.nsu.fit.g14201.dserov.command.CompileCommandException;
-import ru.nsu.fit.g14201.dserov.command.StackUnderflowException;
-import ru.nsu.fit.g14201.dserov.command.WrongArgumentCountException;
+import ru.nsu.fit.g14201.dserov.core.Context;
+import ru.nsu.fit.g14201.dserov.core.Command;
+import ru.nsu.fit.g14201.dserov.core.StackUnderflowException;
+import ru.nsu.fit.g14201.dserov.core.WrongArgumentCountException;
 
 import java.io.IOException;
-import java.io.PrintStream;
 import java.io.Writer;
 import java.util.ArrayList;
-import java.util.Stack;
 
 /**
  * Created by dserov on 04/03/16.
@@ -20,7 +17,7 @@ import java.util.Stack;
 public class Print implements Command {
     private static final Logger logger = LogManager.getLogger();
 
-    public Print(ArrayList<String> args) throws CompileCommandException {
+    public Print(ArrayList<String> args) throws WrongArgumentCountException {
         if (args.size() != 0) {
             logger.warn(args.size() + " arguments instead of 0");
             throw new WrongArgumentCountException(args.size(), 0);

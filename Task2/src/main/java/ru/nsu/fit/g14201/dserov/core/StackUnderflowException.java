@@ -1,6 +1,4 @@
-package ru.nsu.fit.g14201.dserov.command;
-
-import ru.nsu.fit.g14201.dserov.command.RuntimeCommandException;
+package ru.nsu.fit.g14201.dserov.core;
 
 /**
  * Created by dserov on 06/03/16.

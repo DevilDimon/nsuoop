@@ -1,14 +1,13 @@
-package ru.nsu.fit.g14201.dserov;
+package ru.nsu.fit.g14201.dserov.commands;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ru.nsu.fit.g14201.dserov.Context;
-import ru.nsu.fit.g14201.dserov.command.Command;
-import ru.nsu.fit.g14201.dserov.command.StackUnderflowException;
-import ru.nsu.fit.g14201.dserov.command.WrongArgumentCountException;
+import ru.nsu.fit.g14201.dserov.core.Context;
+import ru.nsu.fit.g14201.dserov.core.Command;
+import ru.nsu.fit.g14201.dserov.core.StackUnderflowException;
+import ru.nsu.fit.g14201.dserov.core.WrongArgumentCountException;
 
 import java.util.ArrayList;
-import java.util.Stack;
 
 /**
  * Created by dserov on 04/03/16.
