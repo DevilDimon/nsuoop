@@ -284,8 +284,19 @@ public class RuntimeCommandTest {
         assertEquals("42.0\n", output);
     }
 
+    @Test(expected = StackUnderflowException.class)
+    public void printUnderflow() throws CommandException {
+        Print print = new Print(args);
+        try {
+            print.exec(context);
+        } catch (StackUnderflowException e) {
+            assertEquals(0, context.getStackSize());
+            throw e;
+        }
+    }
+
     @Test
-    public void defineOK() throws CommandException {
+    public void defineNumberOK() throws CommandException {
         args.add("a");
         args.add("4");
         Define define = new Define(args);
@@ -293,12 +304,76 @@ public class RuntimeCommandTest {
         assertEquals((Double) 4.0, context.getByAlias("a"));
     }
 
-    @Test(expected = StackUnderflowException.class)
-    public void printUnderflow() throws CommandException {
-        Print print = new Print(args);
+    @Test
+    public void defineAliasOK() throws CommandException {
+        context.addAlias("b", 6.0);
+        args.add("a");
+        args.add("b");
+        Define define = new Define(args);
+        define.exec(context);
+        assertEquals((Double) 6.0, context.getByAlias("a"));
+    }
+
+    @Test(expected = NoAliasException.class)
+    public void defineNoAlias() throws CommandException {
+        args.add("b");
+        args.add("d");
+        Define define = new Define(args);
         try {
-            print.exec(context);
+            define.exec(context);
+        } catch (NoAliasException e) {
+            assertFalse(context.isAlias("a"));
+            throw e;
+        }
+    }
+
+    @Test
+    public void popOK() throws CommandException {
+        context.pushStack(34.0);
+        context.pushStack(7.0);
+        Pop pop = new Pop(args);
+        pop.exec(context);
+        assertEquals((Double) 34.0, context.peekStack());
+        assertEquals(1, context.getStackSize());
+    }
+
+    @Test(expected = StackUnderflowException.class)
+    public void popUnderflow() throws CommandException {
+        Pop pop = new Pop(args);
+        try {
+            pop.exec(context);
         } catch (StackUnderflowException e) {
+            assertEquals(0, context.getStackSize());
+            throw e;
+        }
+    }
+
+    @Test
+    public void pushNumberOK() throws CommandException {
+        args.add("98");
+        Push push = new Push(args);
+        push.exec(context);
+        assertEquals((Double) 98.0, context.peekStack());
+        assertEquals(1, context.getStackSize());
+    }
+
+    @Test
+    public void pushAliasOK() throws CommandException {
+        context.addAlias("uu", 90.0);
+        args.add("uu");
+        Push push = new Push(args);
+        push.exec(context);
+        assertEquals((Double) 90.0, context.peekStack());
+        assertEquals(1, context.getStackSize());
+    }
+
+    @Test(expected = NoAliasException.class)
+    public void pushNoAlias() throws CommandException {
+        args.add("gg");
+        Push push = new Push(args);
+        try {
+            push.exec(context);
+        } catch (NoAliasException e) {
             assertEquals(0, context.getStackSize());
             throw e;
         }

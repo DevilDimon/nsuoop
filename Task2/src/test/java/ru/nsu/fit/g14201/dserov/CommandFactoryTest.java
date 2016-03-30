@@ -5,8 +5,6 @@ import ru.nsu.fit.g14201.dserov.core.CompileCommandException;
 
 import java.io.IOException;
 
-import static junit.framework.TestCase.fail;
-
 /**
  * Created by dserov on 25/03/16.
  */

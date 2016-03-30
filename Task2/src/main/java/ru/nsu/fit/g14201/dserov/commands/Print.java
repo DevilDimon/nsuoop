@@ -8,7 +8,6 @@ import ru.nsu.fit.g14201.dserov.core.StackUnderflowException;
 import ru.nsu.fit.g14201.dserov.core.WrongArgumentCountException;
 
 import java.io.IOException;
-import java.io.Writer;
 import java.util.ArrayList;
 
 /**
