@@ -49,13 +49,13 @@ public class CommandUtil {
 
         return Pattern.matches(fpRegex, arg);
     }
-    public static Double getArg(Map<String, Double> aliases, String value) throws NoAliasException {
+    public static Double getArg(Context context, String value) throws NoAliasException {
         Double realValue;
         if (CommandUtil.isDouble(value)) {
             realValue = Double.valueOf(value);
         }
-        else if (aliases.containsKey(value)) {
-            realValue = aliases.get(value);
+        else if (context.isAlias(value)) {
+            realValue = context.getByAlias(value);
         } else {
             throw new NoAliasException(value);
         }

@@ -24,15 +24,14 @@ public class SquareRoot implements Command {
 
     @Override
     public void exec(Context context) throws StackUnderflowException, IllegalOperationException {
-        ArrayList<Double> stack = context.getStack();
-        if (stack.size() < 1) {
+        if (context.getStackSize() < 1) {
             throw new StackUnderflowException();
         }
-        double arg = stack.remove(stack.size() - 1);
+        double arg = context.popStack();
         if (arg < 0) {
-            stack.add(arg);
+            context.pushStack(arg);
             throw new IllegalOperationException("Cannot take the square root of a negative number.");
         }
-        stack.add(Math.sqrt(arg));
+        context.pushStack(Math.sqrt(arg));
     }
 }

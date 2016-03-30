@@ -30,9 +30,7 @@ public class Push implements Command {
 
     @Override
     public void exec(Context context) throws NoAliasException {
-        Map<String, Double> aliases = context.getAliases();
-        Double realValue = CommandUtil.getArg(aliases, value);
-        ArrayList<Double> stack = context.getStack();
-        stack.add(realValue);
+        Double realValue = CommandUtil.getArg(context, value);
+        context.pushStack(realValue);
     }
 }

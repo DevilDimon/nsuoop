@@ -23,12 +23,11 @@ public class Multiply implements Command {
 
     @Override
     public void exec(Context context) throws StackUnderflowException {
-        ArrayList<Double> stack = context.getStack();
-        if (stack.size() < 2) {
+        if (context.getStackSize() < 2) {
             throw new StackUnderflowException();
         }
-        double arg1 = stack.remove(stack.size() - 1);
-        double arg2 = stack.remove(stack.size() - 1);
-        stack.add(arg1 * arg2);
+        double arg1 = context.popStack();
+        double arg2 = context.popStack();
+        context.pushStack(arg1 * arg2);
     }
 }

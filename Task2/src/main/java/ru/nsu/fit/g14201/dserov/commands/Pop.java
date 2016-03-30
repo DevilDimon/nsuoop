@@ -24,10 +24,9 @@ public class Pop implements Command {
 
     @Override
     public void exec(Context context) throws StackUnderflowException {
-        ArrayList<Double> stack = context.getStack();
-        if (stack.size() < 1) {
+        if (context.getStackSize() < 1) {
             throw new StackUnderflowException();
         }
-        stack.remove(stack.size() - 1);
+        context.popStack();
     }
 }

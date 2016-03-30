@@ -1,5 +1,7 @@
 package ru.nsu.fit.g14201.dserov.core;
 
+import java.io.IOException;
+
 /**
  * Created by dserov on 25/03/16.
  */
@@ -8,7 +10,11 @@ public interface Context {
     Double popStack();
     void addAlias(String alias, Double value);
     Double peekStack();
+    Double peekStack(int depth);
     int getStackSize();
     Double getByAlias(String alias);
-    void print();
+    boolean isAlias(String alias);
+    void print(Double value) throws IOException;
+    void clearStack();
+
 }

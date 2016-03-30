@@ -26,14 +26,11 @@ public class Print implements Command {
 
     @Override
     public void exec(Context context) throws StackUnderflowException {
-        Writer writer = context.getWriter();
-        ArrayList<Double> stack = context.getStack();
-        if (stack.size() < 1) {
+        if (context.getStackSize() < 1) {
             throw new StackUnderflowException();
         }
         try {
-            writer.write(stack.get(stack.size() - 1) + "\n");
-            writer.flush();
+            context.print(context.peekStack());
             // TODO: BufferedWriter
         } catch (IOException e) {
             System.err.println("Error: " + e.getLocalizedMessage());

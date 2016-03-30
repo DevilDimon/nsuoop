@@ -22,7 +22,7 @@ public class Controller {
 
     public Controller(Reader input, Writer output) throws Exception {
         reader = new CommandReader(input);
-        context = new Context(output);
+        context = new ImplContext(output);
         factory = new CommandFactory();
     }
 
