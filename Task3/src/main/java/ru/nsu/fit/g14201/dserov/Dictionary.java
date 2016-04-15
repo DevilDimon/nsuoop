@@ -6,7 +6,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.TreeSet;
 
 /**
  * Created by dserov on 14/04/16.
@@ -28,6 +27,6 @@ public class Dictionary {
     }
 
     public boolean isValidWord(String word) {
-        return words.contains(word);
+        return words.contains(word.toLowerCase());
     }
 }

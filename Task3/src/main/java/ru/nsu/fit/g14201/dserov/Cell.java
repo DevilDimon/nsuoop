@@ -3,7 +3,7 @@ package ru.nsu.fit.g14201.dserov;
 /**
  * Created by dserov on 14/04/16.
  */
-public class Cell {
+public class Cell implements Comparable<Cell> {
     private Tile tile;
     private int wordMult;
     private int letterMult;
@@ -46,7 +46,7 @@ public class Cell {
     }
 
     public boolean isOccupied() {
-        return (tile == null);
+        return (tile != null);
     }
 
     @Override
@@ -61,5 +61,11 @@ public class Cell {
             return "l" + letterMult;
         }
         return "_";
+    }
+
+
+    @Override
+    public int compareTo(Cell o) {
+        return (getX() >= o.getX()) ? Integer.compare(getX(), o.getX()) : Integer.compare(getY(), o.getY());
     }
 }
