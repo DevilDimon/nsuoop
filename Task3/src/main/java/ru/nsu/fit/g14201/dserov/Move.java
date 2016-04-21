@@ -8,6 +8,10 @@ import java.util.*;
 public class Move {
     private Map<Cell, Tile> buffer;
 
+    public Move() {
+        buffer = new HashMap<>();
+    }
+
     public Move(Cell firstCell, Tile firstTile) {
         buffer = new HashMap<>();
         buffer.put(firstCell, firstTile);
@@ -25,6 +29,19 @@ public class Move {
         return buffer.size();
     }
 
+    public boolean covers(int x, int y) {
+        for (Cell c : buffer.keySet()) {
+            if (c.getX() == x && c.getY() == y) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public Collection<Tile> tiles() {
+        return buffer.values();
+    }
+
     public void clear() {
         buffer.clear();
     }
@@ -35,11 +52,7 @@ public class Move {
         }
     }
 
-    public boolean checkMove(Board board) {
-        return checkMove(board, false);
-    }
-
-    public int evalMove(Board board, Dictionary dict, boolean first) {
+    public int evalMove(Board board, Dictionary dict, boolean first) throws ScrabbleException {
         ArrayList<Cell> cells = new ArrayList<>(buffer.keySet());
         int size = cells.size();
         int x = cells.get(0).getX();
@@ -51,28 +64,30 @@ public class Move {
             boolean h8covered = false;
             for (int i = 1; i < size; i++) {
                 if (direction == 1) {
-                    if (y != cells.get(i).getY()) return -1;
+                    if (y != cells.get(i).getY()) throw new WrongPlacementException("The tiles should maintain a common direction.");
                 } else {
-                    if (x != cells.get(i).getX()) return -1;
+                    if (x != cells.get(i).getX()) throw new WrongPlacementException("The tiles should maintain a common direction.");
                 }
                 if (first && cells.get(i).getX() == 7 && cells.get(i).getY() == 7) h8covered = true;
             }
-            if (first && !h8covered) return -1;
+            if (first && !h8covered) throw new WrongPlacementException("The first turn should cover the central cell.");
 
             // check for empty cells
             Collections.sort(cells);
             if (direction == 1) {
                 for (int i = cells.get(0).getX(); i <= cells.get(size - 1).getX(); i++) {
-                    if (!board.isOccupied(i, y) && !cells.contains(board.getCell(i, y))) return -1;
+                    if (!board.isOccupied(i, y) && !cells.contains(board.getCell(i, y)))
+                        throw new WrongPlacementException("The tiles have to form a continuous line.");
                 }
             } else {
                 for (int i = cells.get(0).getY(); i <= cells.get(size - 1).getY(); i++) {
-                    if (!board.isOccupied(x, i) && !cells.contains(board.getCell(x, i))) return -1;
+                    if (!board.isOccupied(x, i) && !cells.contains(board.getCell(x, i)))
+                        throw new WrongPlacementException("The tiles have to form a continuous line.");
                 }
             }
         }
 
-        if (size == 1 && first) return -1;
+        if (size == 1 && first) throw new WrongPlacementException("Single-letter words are not allowed on the first turn.");
 
         // build words
         Set<List<Integer>> coords = new HashSet<>();
@@ -95,7 +110,7 @@ public class Move {
             }
             if (x1 != x2) {
                 String word = getWord(board, x1, yc, x2, yc);
-                if (!dict.isValidWord(word)) return 0;
+                if (!dict.isValidWord(word)) throw new NoSuchWordException(word);
                 else coords.add(Arrays.asList(x1, yc, x2, yc));
             }
 
@@ -111,10 +126,11 @@ public class Move {
             }
             if (y1 != y2) {
                 String word = getWord(board, xc, y1, xc, y2);
-                if (!dict.isValidWord(word)) return 0;
+                if (!dict.isValidWord(word)) throw new NoSuchWordException(word);
                 else coords.add(Arrays.asList(xc, y1, xc, y2));
             }
         }
+        if (!first && coords.size() == 1) throw new WrongPlacementException("Standalone words are not allowed.");
 
         // evaluate words
         int res = 0;
@@ -147,93 +163,6 @@ public class Move {
             }
         }
         return builder.toString();
-    }
-
-    public boolean checkMove(Board board, boolean first) {
-        ArrayList<Cell> cells = new ArrayList<>(buffer.keySet());
-        int size = cells.size();
-        int x = cells.get(0).getX();
-        int y = cells.get(0).getY();
-
-        if (size > 1) {
-            // check direction consistency & H8 coverage for the first turn
-            int direction = (y == cells.get(1).getY()) ? 1 : 0;
-            int max = (direction == 1) ? x : y;
-            int min = max;
-            boolean h8covered = false;
-            for (int i = 1; i < size; i++) {
-                if (direction == 1) {
-                    if (y != cells.get(i).getY()) return false;
-                    int curX = cells.get(i).getX();
-                    if (curX > max) max = curX;
-                    if (curX < min) min = curX;
-                } else {
-                    if (x != cells.get(i).getX()) return false;
-                    int curY = cells.get(i).getY();
-                    if (curY > max) max = curY;
-                    if (curY < min) min = curY;
-                }
-                if (first && cells.get(i).getX() == 7 && cells.get(i).getY() == 7) h8covered = true;
-            }
-            if (first && !h8covered) return false;
-
-            // check skipping tiles
-            for (int i = min; i <= max; i++) {
-                if (direction == 1) {
-                    if (!cells.contains(board.getCell(i, y)) && !board.isOccupied(i, y)) return false;
-                } else {
-                    if (!cells.contains(board.getCell(x, i)) && !board.isOccupied(x, i)) return false;
-                }
-            }
-
-            // check adjacency
-            if (!first) {
-                boolean adjacent = false;
-                int xleft, xright, ytop, ybottom;
-                if (direction == 1) {
-                    ytop = (y - 1 < 0) ? 0 : y;
-                    ybottom = (y + 1 > 14) ? 14 : y;
-                    xleft = (min - 1 < 0) ? 0 : min - 1;
-                    xright = (max + 1 > 14) ? 14 : max + 1;
-                } else {
-                    ytop = (min - 1 < 0) ? 0 : min - 1;
-                    ybottom = (max + 1 > 14) ? 14 : max + 1;
-                    xleft = (x - 1 < 0) ? 0 : x - 1;
-                    xright = (x + 1 > 14) ? 14 : x + 1;
-                }
-
-                for (int i = xleft; i <= xright; i++) {
-                    for (int j = ytop; j <= ybottom; j++) {
-                        if ((i == xleft && j == ybottom)
-                                || (i == xleft && j == ytop)
-                                || (i == xright && j == ybottom)
-                                || (i == xright && j == ytop)) {
-                            continue;
-                        }
-                        if (!cells.contains(board.getCell(i, j)) && board.isOccupied(i, j))  {
-                            adjacent = true;
-                            break;
-                        }
-                    }
-                }
-                if (!adjacent) return false;
-            }
-        }
-
-        // simplified algorithm for 1 tile
-        if (size == 1) {
-            if (first) return false;
-            int xleft = (x - 1 < 0) ? 0 : x - 1;
-            int xright = (x + 1 > 14) ? 14 : x + 1;
-            int ytop = (y - 1 < 0) ? 0 : y - 1;
-            int ybottom = (y + 1 > 14) ? 14 : y + 1;
-            if (xleft != x && board.isOccupied(xleft, y)) return true;
-            if (xright != x && board.isOccupied(xright, y)) return true;
-            if (ytop != y && board.isOccupied(x, ytop)) return true;
-            if (ybottom != y && board.isOccupied(x, ybottom)) return true;
-            return false;
-        }
-        return true;
     }
 
 
