@@ -40,6 +40,12 @@ public abstract class Player {
 
     public abstract void makeMove();
 
+    // display methods
+
+    public String getLetterFromRack(int index) {
+        return rack.get(index).getLetter();
+    }
+
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();

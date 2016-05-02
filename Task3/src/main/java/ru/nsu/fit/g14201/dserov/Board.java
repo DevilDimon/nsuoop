@@ -11,9 +11,10 @@ import java.util.Scanner;
  * Created by dserov on 14/04/16.
  */
 public class Board {
-    private Cell[][] cells = new Cell[15][15];
+    private Cell[][] cells;
 
     public Board() {
+        cells = new Cell[15][15];
         InputStream stream = getClass().getResourceAsStream("/board.txt");
         try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(stream))) {
             String s;

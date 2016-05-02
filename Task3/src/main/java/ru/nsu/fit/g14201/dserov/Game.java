@@ -33,6 +33,8 @@ public class Game {
         }
     }
 
+    // game control methods
+
     public void nextPlayer() {
         if (curPlayer == 1) {
             turn++;
@@ -53,7 +55,7 @@ public class Game {
     }
 
     public boolean canExchange() {
-        return (players[curPlayer].getRackSize() == 7 && bag.getSize() > 0);
+        return (players[curPlayer].getRackSize() == 7 && bag.getSize() > 0 && curMove.getSize() == 0);
     }
 
     public boolean isExchanged(int tileIndex) {
@@ -120,6 +122,45 @@ public class Game {
         }
         exchangeBuffer.clear();
     }
+
+    // display methods
+
+    public enum CellType { BLANK, DOUBLELETTER, TRIPLELETTER, DOUBLEWORD, TRIPLEWORD, STAR }
+
+    public CellType getUnoccupiedCellType(int x, int y) {
+        Cell cell = board.getCell(x, y);
+        if (cell.getY() == 7 && cell.getX() == 7) {
+            return CellType.STAR;
+        }
+        if (cell.getLetterMult() > 1) {
+            return cell.getLetterMult() == 2 ? CellType.DOUBLELETTER : CellType.TRIPLELETTER;
+        }
+        if (cell.getWordMult() > 1) {
+            return cell.getWordMult() == 2 ? CellType.DOUBLEWORD : CellType.TRIPLEWORD;
+        }
+        return CellType.BLANK;
+    }
+
+    public int getRackSize() {
+        return players[curPlayer].getRackSize();
+    }
+
+    public boolean inMove() {
+        return curMove.getSize() > 0;
+    }
+
+    public boolean inExchange() {
+        return exchangeBuffer.isEmpty();
+    }
+
+    public boolean isTilePlayed(int tileIndex) {
+        return curMove.tiles().contains(players[curPlayer].getFromRack(tileIndex));
+    }
+
+    public String getTileChar(int tileIndex) {
+        return players[curPlayer].getLetterFromRack(tileIndex);
+    }
+
 
     @Override
     public String toString() {
