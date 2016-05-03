@@ -8,18 +8,18 @@ import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
 /**
- * Created by dserov on 23/04/16.
+ * Created by dserov on 02/05/16.
  */
-public class RackPanel extends JPanel {
-
+public class ControlPanel extends JPanel {
     private Game game;
 
-    private ImageIcon[] tileIcons;
-    private TileButton[] tileButtons;
+    private ImageIcon[] controlIcons;
+    private ControlButton[] controlButtons;
 
-    public RackPanel(Game game) {
+    public ControlPanel(Game game) {
         this.game = game;
-        tileButtons = new TileButton[7];
+        controlButtons = new ControlButton[4];
+        setBackground(new Color(7, 89, 79));
 
         setLayout(new GridBagLayout());
         GridBagConstraints gc = new GridBagConstraints();
@@ -27,28 +27,28 @@ public class RackPanel extends JPanel {
         gc.weighty = 1;
         gc.gridy = 0;
         gc.fill = GridBagConstraints.NONE;
-        for (int i = 0; i < 7; i++) {
+        for (int i = 0; i < 4; i++) {
             gc.gridx = i;
-            tileButtons[i] = new TileButton();
-            add(tileButtons[i]);
+            controlButtons[i] = new ControlButton();
+            add(controlButtons[i]);
         }
     }
 
     SwingWorker<ImageIcon[], Void> worker = new SwingWorker<ImageIcon[], Void>() {
         @Override
         protected ImageIcon[] doInBackground() throws Exception {
-            ImageIcon[] tileImgs = new ImageIcon[26];
-            for(int i = 0; i < 26; i++) {
-                tileImgs[i] = loadImage(i);
+            ImageIcon[] icons = new ImageIcon[4];
+            for (int i = 0; i < 4; i++) {
+                icons[i] = loadImage(i + 1);
             }
-            return tileImgs;
+            return icons;
         }
 
         @Override
         protected void done() {
             setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
             try {
-                tileIcons = get();
+                controlIcons = get();
                 assignImages();
             } catch (InterruptedException e) {
             } catch (ExecutionException e) {
@@ -65,10 +65,8 @@ public class RackPanel extends JPanel {
     };
 
     private ImageIcon loadImage(int imgNum) {
-
         try {
-            BufferedImage img = ImageIO.read(getClass().getResourceAsStream("/images/tiles/"
-                    + ScrabbleUtils.getNameByInt(imgNum) + ".png"));
+            BufferedImage img = ImageIO.read(getClass().getResourceAsStream("/images/controls/" + imgNum + ".png"));
             return new ImageIcon(img);
 
         } catch (IOException e) {
@@ -78,29 +76,16 @@ public class RackPanel extends JPanel {
     }
 
     private void assignImages() {
-        for (int i = 0; i < 7; i++) {
-            if (i < game.getRackSize()) {
-                if (game.inMove() && game.isTilePlayed(i)) {
-                    tileButtons[i].setVisible(false);
-                } else {
-                    tileButtons[i].setVisible(true);
-                    String name = game.getTileChar(i);
-                    tileButtons[i].setIcon(tileIcons[ScrabbleUtils.getIntByName(name)]);
-                }
-            } else {
-                tileButtons[i].setVisible(false);
-            }
+        // revamp after debug
+        for (ControlButton i : controlButtons) {
+            i.setIcon(controlIcons[0]);
+            i.setToolTipText("Next turn");
         }
-
     }
 
     public void load() {
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         worker.execute();
-    }
-
-    public void update() {
-        assignImages();
     }
 
 

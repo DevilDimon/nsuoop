@@ -12,7 +12,7 @@ public class ViewController extends JFrame {
     private Game game;
 
     private BoardPanel boardPanel;
-    private RackPanel rackPanel;
+    private BottomPanel bottomPanel;
 
     public ViewController(Game game) {
         this.game = game;
@@ -24,19 +24,30 @@ public class ViewController extends JFrame {
         } catch (InterruptedException | InvocationTargetException e) {
             e.printStackTrace();
         }
-        rackPanel.load();
         boardPanel.load();
-
+        bottomPanel.load();
     }
 
     public void createAndShowGUI() {
         setTitle("Scrabble v0.1");
 //        setSize(750, 770);
-        setLayout(new BorderLayout());
+        setLayout(new GridBagLayout());
+        getContentPane().setBackground(new Color(7, 89, 79));
+        GridBagConstraints gc = new GridBagConstraints();
         boardPanel = new BoardPanel(game);
-        rackPanel = new RackPanel(game);
-        add(boardPanel, BorderLayout.CENTER);
-        add(rackPanel, BorderLayout.SOUTH);
+        bottomPanel = new BottomPanel(game);
+
+        gc.weightx = 1;
+        gc.weighty = 1;
+        gc.gridx = 0;
+        gc.gridy = 0;
+        gc.fill = GridBagConstraints.NONE;
+        add(boardPanel, gc);
+
+        gc.gridy = 1;
+        add(bottomPanel, gc);
+
+
         setResizable(false);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);

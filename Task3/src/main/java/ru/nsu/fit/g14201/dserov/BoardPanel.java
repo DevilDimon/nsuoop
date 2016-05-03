@@ -31,6 +31,7 @@ public class BoardPanel extends JPanel {
                 gc.gridy = j;
                 cellButtons[i][j] = new CellButton(i, j);
                 add(cellButtons[i][j], gc);
+
             }
         }
     }
@@ -47,6 +48,7 @@ public class BoardPanel extends JPanel {
 
         @Override
         protected void done() {
+            setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
             try {
                 cellImages = get();
                 assignImages();
@@ -80,6 +82,7 @@ public class BoardPanel extends JPanel {
     private void assignImages() {
         for (int i = 0; i < 15; i++) {
             for (int j = 0; j < 15; j++) {
+                cellButtons[i][j].setVisible(false);
                 switch (game.getUnoccupiedCellType(i, j)) {
                     case BLANK: {
                         cellButtons[i][j].setIcon(cellImages[0]);
@@ -112,9 +115,15 @@ public class BoardPanel extends JPanel {
                 }
             }
         }
+        for (int i = 0; i < 15; i++) {
+            for (int j = 0; j < 15; j++) {
+                cellButtons[i][j].setVisible(true);
+            }
+        }
     }
 
     public void load() {
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         worker.execute();
     }
 
