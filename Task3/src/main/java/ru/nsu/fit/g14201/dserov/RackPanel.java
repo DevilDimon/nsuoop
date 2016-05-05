@@ -1,5 +1,7 @@
 package ru.nsu.fit.g14201.dserov;
 
+import ru.nsu.fit.g14201.dserov.model.Game;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;

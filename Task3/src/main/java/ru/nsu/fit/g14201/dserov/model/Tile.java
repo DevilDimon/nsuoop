@@ -1,4 +1,4 @@
-package ru.nsu.fit.g14201.dserov;
+package ru.nsu.fit.g14201.dserov.model;
 
 /**
  * Created by dserov on 14/04/16.

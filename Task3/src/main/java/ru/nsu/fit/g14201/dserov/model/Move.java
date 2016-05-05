@@ -1,4 +1,4 @@
-package ru.nsu.fit.g14201.dserov;
+package ru.nsu.fit.g14201.dserov.model;
 
 import java.util.*;
 
@@ -52,7 +52,7 @@ public class Move {
         }
     }
 
-    public int evalMove(Board board, Dictionary dict, boolean first) throws ScrabbleException {
+    public int evalMove(Board board, ru.nsu.fit.g14201.dserov.model.Dictionary dict, boolean first) throws ScrabbleException {
         ArrayList<Cell> cells = new ArrayList<>(buffer.keySet());
         int size = cells.size();
         int x = cells.get(0).getX();

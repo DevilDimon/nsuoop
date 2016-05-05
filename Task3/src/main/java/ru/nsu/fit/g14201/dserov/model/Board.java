@@ -1,6 +1,5 @@
-package ru.nsu.fit.g14201.dserov;
+package ru.nsu.fit.g14201.dserov.model;
 
-import javax.swing.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;

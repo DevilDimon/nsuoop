@@ -1,5 +1,7 @@
 package ru.nsu.fit.g14201.dserov;
 
+import ru.nsu.fit.g14201.dserov.model.Game;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
@@ -76,11 +78,14 @@ public class ControlPanel extends JPanel {
     }
 
     private void assignImages() {
-        // revamp after debug
-        for (ControlButton i : controlButtons) {
-            i.setIcon(controlIcons[0]);
-            i.setToolTipText("Next turn");
+
+        for (int i = 0; i < 4; i++) {
+            controlButtons[i].setIcon(controlIcons[i]);
         }
+        controlButtons[0].setToolTipText("Exchange tiles");
+        controlButtons[1].setToolTipText("Recall tiles");
+        controlButtons[2].setToolTipText("Skip turn");
+        controlButtons[3].setToolTipText("Accept tile placement");
     }
 
     public void load() {

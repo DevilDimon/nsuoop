@@ -1,4 +1,4 @@
-package ru.nsu.fit.g14201.dserov;
+package ru.nsu.fit.g14201.dserov.model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -159,6 +159,14 @@ public class Game {
 
     public String getTileChar(int tileIndex) {
         return players[curPlayer].getLetterFromRack(tileIndex);
+    }
+
+    public int getTurn() {
+        return turn + 1;
+    }
+
+    public int getCurPlayer() {
+        return curPlayer + 1;
     }
 
 
