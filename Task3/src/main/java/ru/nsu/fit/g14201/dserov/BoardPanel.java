@@ -129,5 +129,9 @@ public class BoardPanel extends JPanel {
         worker.execute();
     }
 
+    public void updateBoard() {
+        // TODO
+    }
+
 
 }

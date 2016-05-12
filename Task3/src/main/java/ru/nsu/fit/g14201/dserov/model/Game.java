@@ -41,6 +41,7 @@ public class Game {
         }
         if (curMove.getSize() == 0) {
             skipCount++;
+            curPlayer = 1 - curPlayer;
             return;
         }
         while (players[curPlayer].getRackSize() < 7 && bag.getSize() > 0) {
@@ -94,6 +95,10 @@ public class Game {
         }
     }
 
+    public void clearMove() {
+        curMove.clear();
+    }
+
     public void commitMove() throws ScrabbleException {
         scores[curPlayer] += curMove.evalMove(board, dict, (turn == 0));
         for (Tile t : curMove.tiles()) {
@@ -120,6 +125,10 @@ public class Game {
             players[curPlayer].removeFromRack(exchangeBuffer.remove(exchangeBuffer.size() - 1));
             players[curPlayer].addToRack(bag.nextTile());
         }
+        exchangeBuffer.clear();
+    }
+
+    public void clearExchange() {
         exchangeBuffer.clear();
     }
 

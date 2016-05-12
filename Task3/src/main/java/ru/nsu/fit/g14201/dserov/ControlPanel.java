@@ -5,6 +5,8 @@ import ru.nsu.fit.g14201.dserov.model.Game;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
@@ -12,11 +14,13 @@ import java.util.concurrent.ExecutionException;
 /**
  * Created by dserov on 02/05/16.
  */
-public class ControlPanel extends JPanel {
+public class ControlPanel extends JPanel implements ActionListener {
     private Game game;
 
     private ImageIcon[] controlIcons;
     private ControlButton[] controlButtons;
+
+    private ControlListener listener;
 
     public ControlPanel(Game game) {
         this.game = game;
@@ -34,6 +38,7 @@ public class ControlPanel extends JPanel {
             controlButtons[i] = new ControlButton();
             add(controlButtons[i]);
         }
+
     }
 
     SwingWorker<ImageIcon[], Void> worker = new SwingWorker<ImageIcon[], Void>() {
@@ -81,6 +86,7 @@ public class ControlPanel extends JPanel {
 
         for (int i = 0; i < 4; i++) {
             controlButtons[i].setIcon(controlIcons[i]);
+            controlButtons[i].addActionListener(this);
         }
         controlButtons[0].setToolTipText("Exchange tiles");
         controlButtons[1].setToolTipText("Recall tiles");
@@ -93,5 +99,19 @@ public class ControlPanel extends JPanel {
         worker.execute();
     }
 
+    public void setControlListener(ControlListener listener) {
+        this.listener = listener;
+    }
 
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        ControlButton clicked = (ControlButton) e.getSource();
+        for (int i = 0; i < 4; i++) {
+            if (clicked == controlButtons[i]) {
+                listener.controlClicked(i);
+                break;
+            }
+        }
+    }
 }
