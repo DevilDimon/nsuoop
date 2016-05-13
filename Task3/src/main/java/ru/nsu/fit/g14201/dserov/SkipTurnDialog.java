@@ -10,17 +10,15 @@ import java.awt.event.*;
  * Created by dserov on 12/05/16.
  */
 public class SkipTurnDialog extends JDialog implements ActionListener {
-    private Game game;
     private boolean doSkip;
 
     private JLabel label;
     private JButton yesButton;
     private JButton noButton;
 
-    public SkipTurnDialog(JFrame parent, Game game) {
+    public SkipTurnDialog(JFrame parent) {
         super(parent, "Scrabble", true);
-        this.game = game;
-        label = new JLabel("Are you sure you want to skip the current turn?");
+        label = new JLabel("Are you sure you want to skip the current turn?", SwingConstants.CENTER);
         yesButton = new JButton("Skip");
         yesButton.addActionListener(this);
         noButton = new JButton("Cancel");
@@ -31,18 +29,26 @@ public class SkipTurnDialog extends JDialog implements ActionListener {
         gc.gridx = 0;
         gc.gridy = 0;
         gc.gridwidth = 2;
+        gc.weightx = 2;
+        gc.insets = new Insets(0, 0, 10, 0);
+        gc.anchor = GridBagConstraints.CENTER;
+        gc.ipady = 10;
         gc.fill = GridBagConstraints.HORIZONTAL;
         add(label, gc);
 
         gc.gridy = 1;
+        gc.weightx = 1;
         gc.gridwidth = 1;
-        gc.fill = GridBagConstraints.NONE;
+        gc.insets = new Insets(0, 10, 0, 10);
+        gc.anchor = GridBagConstraints.LINE_END;
         add(yesButton, gc);
 
         gc.gridx = 1;
+        gc.weightx = 1;
+        gc.anchor = GridBagConstraints.LINE_START;
         add(noButton, gc);
 
-        setSize(300, 200);
+        setSize(400, 200);
         setLocationRelativeTo(parent);
         setResizable(false);
         addWindowListener(new WindowAdapter() {

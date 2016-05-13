@@ -16,7 +16,7 @@ public class BoardPanel extends JPanel {
 
     private Game game;
 
-    private ImageIcon[] cellImages;
+    private ImageIcon[] images;
     private CellButton[][] cellButtons;
 
     public BoardPanel(Game game) {
@@ -41,19 +41,22 @@ public class BoardPanel extends JPanel {
     SwingWorker<ImageIcon[], Void> worker = new SwingWorker<ImageIcon[], Void>() {
         @Override
         protected ImageIcon[] doInBackground() throws Exception {
-            ImageIcon[] boardImgs = new ImageIcon[6];
+            ImageIcon[] imgs = new ImageIcon[32];
             for (int i = 0; i < 6; i++) {
-                boardImgs[i] = loadImage(i + 1);
+                imgs[26 + i] = loadBoardImage(i + 1);
             }
-            return boardImgs;
+            for (int i = 0; i < 26; i++) {
+                imgs[i] = loadTileImage(i);
+            }
+            return imgs;
         }
 
         @Override
         protected void done() {
             setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
             try {
-                cellImages = get();
-                assignImages();
+                images = get();
+                updateBoard();
             } catch (InterruptedException e) {}
             catch (ExecutionException e) {
                 String why;
@@ -70,7 +73,7 @@ public class BoardPanel extends JPanel {
 
 
 
-    private ImageIcon loadImage(int imgNum) {
+    private ImageIcon loadBoardImage(int imgNum) {
         try {
             BufferedImage img = ImageIO.read(getClass().getResourceAsStream("/images/board/" + imgNum + ".png"));
             return new ImageIcon(img);
@@ -81,45 +84,40 @@ public class BoardPanel extends JPanel {
         }
     }
 
-    private void assignImages() {
-        for (int i = 0; i < 15; i++) {
-            for (int j = 0; j < 15; j++) {
-                cellButtons[i][j].setVisible(false);
-                switch (game.getUnoccupiedCellType(i, j)) {
-                    case BLANK: {
-                        cellButtons[i][j].setIcon(cellImages[0]);
-                        break;
-                    }
-                    case DOUBLELETTER: {
-                        cellButtons[i][j].setIcon(cellImages[1]);
-                        break;
-                    }
-                    case TRIPLELETTER: {
-                        cellButtons[i][j].setIcon(cellImages[2]);
-                        break;
-                    }
-                    case DOUBLEWORD: {
-                        cellButtons[i][j].setIcon(cellImages[3]);
-                        break;
-                    }
-                    case TRIPLEWORD: {
-                        cellButtons[i][j].setIcon(cellImages[4]);
-                        break;
-                    }
-                    case STAR: {
-                        cellButtons[i][j].setIcon(cellImages[5]);
-                        break;
-                    }
-                    default: {
-                        cellButtons[i][j].setIcon(cellImages[0]);
-                        break;
-                    }
-                }
-            }
+    private ImageIcon loadTileImage(int imgNum) {
+        try {
+            BufferedImage img = ImageIO.read(getClass().getResourceAsStream("/images/tiles/"
+                    + ScrabbleUtils.getNameByInt(imgNum) + ".png"));
+            return new ImageIcon(img.getScaledInstance(50, 50, Image.SCALE_SMOOTH));
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
         }
-        for (int i = 0; i < 15; i++) {
-            for (int j = 0; j < 15; j++) {
-                cellButtons[i][j].setVisible(true);
+    }
+
+    private ImageIcon getUnoccupiedImage(int i, int j) {
+        switch (game.getUnoccupiedCellType(i, j)) {
+            case BLANK: {
+                return images[26];
+            }
+            case DOUBLELETTER: {
+                return images[27];
+            }
+            case TRIPLELETTER: {
+                return images[28];
+            }
+            case DOUBLEWORD: {
+                return images[29];
+            }
+            case TRIPLEWORD: {
+                return images[30];
+            }
+            case STAR: {
+                return images[31];
+            }
+            default: {
+                return images[26];
             }
         }
     }
@@ -130,7 +128,19 @@ public class BoardPanel extends JPanel {
     }
 
     public void updateBoard() {
-        // TODO
+        for (int i = 0; i < 15; i++) {
+            for (int j = 0; j < 15; j++) {
+                cellButtons[i][j].setVisible(false);
+                if (game.isOccupied(i, j)) {
+                    int index = ScrabbleUtils.getIntByName(game.getCellChar(i, j));
+                    cellButtons[i][j].setIcon(images[index]);
+                } else {
+
+                    cellButtons[i][j].setIcon(getUnoccupiedImage(i, j));
+                }
+                cellButtons[i][j].setVisible(true);
+            }
+        }
     }
 
 

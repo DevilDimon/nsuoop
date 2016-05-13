@@ -102,7 +102,9 @@ public class RackPanel extends JPanel {
     }
 
     public void update() {
+        setVisible(false);
         assignImages();
+        setVisible(true);
     }
 
 

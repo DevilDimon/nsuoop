@@ -55,7 +55,7 @@ public class ViewController extends JFrame {
             }
         });
         statusPanel = new StatusPanel(game);
-        skipTurnDialog = new SkipTurnDialog(this, game);
+        skipTurnDialog = new SkipTurnDialog(this);
 
         timer = new Timer(1000, e -> {
             sec++;
@@ -105,7 +105,8 @@ public class ViewController extends JFrame {
     }
 
     private void nextPlayer() {
-        // TODO
         bottomPanel.updateRack();
+        statusPanel.update();
+        // TODO: GameOverDialog
     }
 }

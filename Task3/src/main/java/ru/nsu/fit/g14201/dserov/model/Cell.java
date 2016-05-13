@@ -49,6 +49,10 @@ public class Cell implements Comparable<Cell> {
         return (tile != null);
     }
 
+    public String getCellChar() {
+        return tile.getLetter();
+    }
+
     @Override
     public String toString() {
         if (tile != null) {

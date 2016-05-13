@@ -166,8 +166,16 @@ public class Game {
         return curMove.tiles().contains(players[curPlayer].getFromRack(tileIndex));
     }
 
+    public boolean isOccupied(int x, int y) {
+        return board.isOccupied(x, y);
+    }
+
     public String getTileChar(int tileIndex) {
         return players[curPlayer].getLetterFromRack(tileIndex);
+    }
+
+    public String getCellChar(int x, int y) {
+        return board.getCell(x, y).getCellChar();
     }
 
     public int getTurn() {
