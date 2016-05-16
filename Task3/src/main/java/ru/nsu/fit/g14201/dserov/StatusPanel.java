@@ -35,6 +35,7 @@ public class StatusPanel extends JPanel {
     public void update() {
         scoreLabels[0].setText("Player 1: " + game.getScore(0) + " points");
         scoreLabels[1].setText("Player 2: " + game.getScore(1) + " points");
-        turnInfo.setText("Turn " + game.getTurn() + ". Player " + game.getCurPlayer() + "'s turn.");
+        turnInfo.setText("Turn " + game.getTurn() +
+                ". Player " + game.getCurPlayer() + "'s turn.");
     }
 }

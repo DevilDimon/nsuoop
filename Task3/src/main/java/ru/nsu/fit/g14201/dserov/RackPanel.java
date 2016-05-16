@@ -4,7 +4,10 @@ import ru.nsu.fit.g14201.dserov.model.Game;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
@@ -12,12 +15,14 @@ import java.util.concurrent.ExecutionException;
 /**
  * Created by dserov on 23/04/16.
  */
-public class RackPanel extends JPanel {
+public class RackPanel extends JPanel implements ActionListener {
 
     private Game game;
 
     private ImageIcon[] tileIcons;
     private TileButton[] tileButtons;
+
+    private RackListener listener;
 
     public RackPanel(Game game) {
         this.game = game;
@@ -31,7 +36,8 @@ public class RackPanel extends JPanel {
         gc.fill = GridBagConstraints.NONE;
         for (int i = 0; i < 7; i++) {
             gc.gridx = i;
-            tileButtons[i] = new TileButton();
+            tileButtons[i] = new TileButton(i);
+            tileButtons[i].addActionListener(this);
             add(tileButtons[i]);
         }
     }
@@ -88,12 +94,17 @@ public class RackPanel extends JPanel {
                     tileButtons[i].setVisible(true);
                     String name = game.getTileChar(i);
                     tileButtons[i].setIcon(tileIcons[ScrabbleUtils.getIntByName(name)]);
+                    tileButtons[i].setBorder(BorderFactory.createEmptyBorder());
                 }
             } else {
                 tileButtons[i].setVisible(false);
             }
         }
 
+    }
+
+    public void setRackListener(RackListener listener) {
+        this.listener = listener;
     }
 
     public void load() {
@@ -107,5 +118,14 @@ public class RackPanel extends JPanel {
         setVisible(true);
     }
 
+    public void addBorder(int tile) {
+        tileButtons[tile].setBorder(BorderFactory.createLineBorder(new Color(215, 65, 29), 2));
+    }
 
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        TileButton b = (TileButton) e.getSource();
+        listener.tileClicked(b.getIndex());
+    }
 }

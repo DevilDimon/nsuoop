@@ -26,6 +26,10 @@ public abstract class Player {
         rack.remove(tile);
     }
 
+    public void clearRack() {
+        rack.clear();
+    }
+
     public Tile getFromRack(int index) {
         return rack.get(index);
     }

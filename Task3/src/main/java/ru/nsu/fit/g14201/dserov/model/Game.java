@@ -63,8 +63,8 @@ public class Game {
         return exchangeBuffer.contains(players[curPlayer].getFromRack(tileIndex));
     }
 
-    public boolean isGameOver() {
-        if (skipCount == 6 || (bag.getSize() == 0 && (players[0].getRackSize() == 0 || players[1].getRackSize() == 0))) {
+    public boolean isGameOver() { // TODO! GET BACK!
+        if (skipCount == 2 || (bag.getSize() == 0 && (players[0].getRackSize() == 0 || players[1].getRackSize() == 0))) {
             return true;
         }
         else return false;
@@ -74,6 +74,23 @@ public class Game {
         for (int i = 0; i < 2; i++) {
             scores[i] -= players[i].getRackSum();
         }
+    }
+
+    public void reset() {
+        bag = new Bag();
+        for (Player p : players) {
+            p.clearRack();
+            for (int i = 0; i < 7; i++) {
+                p.addToRack(bag.nextTile());
+            }
+        }
+        curMove.clear();
+        exchangeBuffer.clear();
+        board = new Board();
+        scores[0] = 0;
+        scores[1] = 0;
+        turn = 0;
+        skipCount = 0;
     }
 
     public int getScore() {
@@ -152,6 +169,10 @@ public class Game {
 
     public int getRackSize() {
         return players[curPlayer].getRackSize();
+    }
+
+    public int getBagSize() {
+        return bag.getSize();
     }
 
     public boolean inMove() {

@@ -1,6 +1,7 @@
 package ru.nsu.fit.g14201.dserov;
 
 import ru.nsu.fit.g14201.dserov.model.Game;
+import ru.nsu.fit.g14201.dserov.model.WrongPlacementException;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,8 +20,11 @@ public class ViewController extends JFrame {
     private StatusPanel statusPanel;
 
     private SkipTurnDialog skipTurnDialog;
+    private GameOverDialog gameOverDialog;
     private Timer timer;
     private int sec;
+
+    private int curRackTile = -1;
 
 
     public ViewController(Game game) {
@@ -45,17 +49,24 @@ public class ViewController extends JFrame {
         getContentPane().setBackground(new Color(7, 89, 79));
         GridBagConstraints gc = new GridBagConstraints();
         boardPanel = new BoardPanel(game);
+
+        boardPanel.setBoardListener(this::boardClicked);
+
         bottomPanel = new BottomPanel(game);
+
         bottomPanel.setControlListener((item) -> {
             switch (item) {
                 case 2 : {
-                    skipTurn();
+                    skipTurnButton();
                     break;
                 }
             }
         });
+        bottomPanel.setRackListener(this::rackClicked);
+
         statusPanel = new StatusPanel(game);
         skipTurnDialog = new SkipTurnDialog(this);
+        gameOverDialog = new GameOverDialog(this);
 
         timer = new Timer(1000, e -> {
             sec++;
@@ -85,13 +96,36 @@ public class ViewController extends JFrame {
         pack();
         setLocationRelativeTo(null);
         setVisible(true);
-        setMinimumSize(new Dimension(600, 720));
+        setMinimumSize(new Dimension(600, 730));
     }
 
-    private void skipTurn() {
+    private void boardClicked(int x, int y) {
+        if (curRackTile != -1) {
+            try {
+                game.addTileToMove(curRackTile, x, y);
+                String tileChar = game.getTileChar(curRackTile);
+                boardPanel.assignTileToCell(ScrabbleUtils.getIntByName(tileChar), x, y);
+                curRackTile = -1;
+            } catch (WrongPlacementException e) {
+                // TODO: dialog
+            }
+        } // TODO: finish
+    }
+
+    private void rackClicked(int tile) {
+        if (curRackTile == -1) {
+            curRackTile = tile;
+            bottomPanel.addBorder(tile);
+        } else {
+            curRackTile = -1;
+            // TODO: add remove border
+            bottomPanel.update();
+        }
+    }
+
+    private void skipTurnButton() {
         skipTurnDialog.setVisible(true);
-        boolean skip = skipTurnDialog.isSkip();
-        if (skip) {
+        if (skipTurnDialog.isSkip()) {
             if (game.inMove()) {
                 game.clearMove();
                 boardPanel.updateBoard();
@@ -99,14 +133,28 @@ public class ViewController extends JFrame {
             if (game.inExchange()) {
                 game.clearExchange();
             }
-            game.nextPlayer();
             nextPlayer();
         }
     }
 
+    // TODO: nextTurnButton
+
     private void nextPlayer() {
-        bottomPanel.updateRack();
+        game.nextPlayer();
+
+        if (game.isGameOver()) {
+            game.endGame();
+            gameOverDialog.showWithScores(game.getScore(0), game.getScore(1));
+            if (gameOverDialog.isRestart()) {
+                game.reset();
+                boardPanel.updateBoard();
+            } else {
+                timer.stop();
+                dispose();
+            }
+        }
+        bottomPanel.update();
         statusPanel.update();
-        // TODO: GameOverDialog
+        curRackTile = -1;
     }
 }

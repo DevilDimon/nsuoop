@@ -36,6 +36,8 @@ public class ControlPanel extends JPanel implements ActionListener {
         for (int i = 0; i < 4; i++) {
             gc.gridx = i;
             controlButtons[i] = new ControlButton();
+            controlButtons[i].setHorizontalTextPosition(JButton.CENTER);
+            controlButtons[i].setVerticalTextPosition(JButton.CENTER);
             add(controlButtons[i]);
         }
 
@@ -113,5 +115,9 @@ public class ControlPanel extends JPanel implements ActionListener {
                 break;
             }
         }
+    }
+
+    public void update() {
+        controlButtons[0].setText("" + game.getBagSize());
     }
 }

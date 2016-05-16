@@ -18,11 +18,11 @@ public class CellButton extends JButton {
         setContentAreaFilled(false);
     }
 
-    public int getGridx() {
+    public int getGridX() {
         return gridx;
     }
 
-    public int getGridy() {
+    public int getGridY() {
         return gridy;
     }
 }

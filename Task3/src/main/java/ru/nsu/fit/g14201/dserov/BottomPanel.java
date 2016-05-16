@@ -10,7 +10,7 @@ import java.awt.event.ActionListener;
 /**
  * Created by dserov on 03/05/16.
  */
-public class BottomPanel extends JPanel implements ControlListener {
+public class BottomPanel extends JPanel implements ControlListener, RackListener {
     private Game game;
 
     private RackPanel rackPanel;
@@ -28,13 +28,19 @@ public class BottomPanel extends JPanel implements ControlListener {
         add(controlPanel);
     }
 
-    public void updateRack() {
+    public void update() {
         rackPanel.update();
+        controlPanel.update();
     }
 
     public void load() {
         rackPanel.load();
         controlPanel.load();
+        controlPanel.update();
+    }
+
+    public void addBorder(int tile) {
+        rackPanel.addBorder(tile);
     }
 
     public void setControlListener(ControlListener listener) {
@@ -44,10 +50,17 @@ public class BottomPanel extends JPanel implements ControlListener {
 
     public void setRackListener(RackListener listener) {
         this.rackListener = listener;
+        rackPanel.setRackListener(listener);
     }
+
 
     @Override
     public void controlClicked(int item) {
         controlListener.controlClicked(item);
+    }
+
+    @Override
+    public void tileClicked(int tile) {
+        rackListener.tileClicked(tile);
     }
 }

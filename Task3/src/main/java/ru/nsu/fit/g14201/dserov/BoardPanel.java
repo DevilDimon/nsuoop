@@ -5,6 +5,8 @@ import ru.nsu.fit.g14201.dserov.model.Game;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
@@ -12,12 +14,14 @@ import java.util.concurrent.ExecutionException;
 /**
  * Created by dserov on 22/04/16.
  */
-public class BoardPanel extends JPanel {
+public class BoardPanel extends JPanel implements ActionListener {
 
     private Game game;
 
     private ImageIcon[] images;
     private CellButton[][] cellButtons;
+
+    private BoardListener listener;
 
     public BoardPanel(Game game) {
         this.game = game;
@@ -32,6 +36,7 @@ public class BoardPanel extends JPanel {
                 gc.gridx = i;
                 gc.gridy = j;
                 cellButtons[i][j] = new CellButton(i, j);
+                cellButtons[i][j].addActionListener(this);
                 add(cellButtons[i][j], gc);
 
             }
@@ -143,5 +148,18 @@ public class BoardPanel extends JPanel {
         }
     }
 
+    public void assignTileToCell(int tileLetter, int x, int y) {
+        cellButtons[x][y].setIcon(images[tileLetter]);
+    }
 
+    public void setBoardListener(BoardListener listener) {
+        this.listener = listener;
+    }
+
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        CellButton b = (CellButton) e.getSource();
+        listener.cellClicked(b.getGridX(), b.getGridY());
+    }
 }
