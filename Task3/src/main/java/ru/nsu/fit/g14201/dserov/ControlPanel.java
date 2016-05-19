@@ -122,4 +122,14 @@ public class ControlPanel extends JPanel implements ActionListener {
         controlButtons[0].setEnabled(game.canExchange());
         controlButtons[3].setEnabled(game.inMove());
     }
+
+    public void toggleExchange() {
+        boolean prevState = controlButtons[1].isEnabled();
+        for (int i = 1; i < 4; i++) {
+            controlButtons[i].setEnabled(!prevState);
+        }
+        if (prevState == false) {
+            update();
+        }
+    }
 }

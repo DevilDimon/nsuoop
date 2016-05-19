@@ -51,8 +51,9 @@ public class Game {
         curPlayer = 1 - curPlayer;
     }
 
-    public boolean isGameOver() { // TODO: RESTORE SKIP COUNT!
-        if (skipCount == 3 || (bag.getSize() == 0 && (players[0].getRackSize() == 0 || players[1].getRackSize() == 0))) {
+
+    public boolean isGameOver() {
+        if (skipCount == 6 || (bag.getSize() == 0 && (players[0].getRackSize() == 0 || players[1].getRackSize() == 0))) {
             return true;
         }
         else return false;
@@ -79,6 +80,7 @@ public class Game {
         scores[1] = 0;
         turn = 0;
         skipCount = 0;
+        curPlayer = 0;
     }
 
     public int getScore() {
@@ -111,10 +113,6 @@ public class Game {
         }
         curMove.makeMove();
         skipCount = 0;
-    }
-
-    public void recallTiles() {
-        curMove.clear();
     }
 
     public void addTileToExchange(int tileIndex) {
@@ -168,7 +166,7 @@ public class Game {
     }
 
     public boolean inExchange() {
-        return exchangeBuffer.isEmpty();
+        return !exchangeBuffer.isEmpty();
     }
 
     public boolean isCurHuman() {
@@ -176,7 +174,7 @@ public class Game {
     }
 
     public boolean canExchange() {
-        return (players[curPlayer].getRackSize() == 7 && bag.getSize() > 0 && curMove.getSize() == 0);
+        return (bag.getSize() > 7 && curMove.getSize() == 0);
     }
 
     public boolean isExchanged(int tileIndex) {

@@ -122,6 +122,10 @@ public class RackPanel extends JPanel implements ActionListener {
         tileButtons[tile].setBorder(BorderFactory.createLineBorder(new Color(215, 65, 29), 2));
     }
 
+    public void removeBorder(int tile) {
+        tileButtons[tile].setBorder(BorderFactory.createEmptyBorder());
+    }
+
 
     @Override
     public void actionPerformed(ActionEvent e) {

@@ -39,8 +39,16 @@ public class BottomPanel extends JPanel implements ControlListener, RackListener
         controlPanel.update();
     }
 
+    public void toggleExchange() {
+        controlPanel.toggleExchange();
+    }
+
     public void addBorder(int tile) {
         rackPanel.addBorder(tile);
+    }
+
+    public void removeBorder(int tile) {
+        rackPanel.removeBorder(tile);
     }
 
     public void setControlListener(ControlListener listener) {

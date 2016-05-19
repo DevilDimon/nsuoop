@@ -6,6 +6,7 @@ import ru.nsu.fit.g14201.dserov.model.WrongPlacementException;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.lang.reflect.InvocationTargetException;
 
 
@@ -26,7 +27,13 @@ public class ViewController extends JFrame {
     private int sec;
 
     private int curRackTile = -1;
+    private boolean inExchange = false;
 
+    private final String welcomeMessage = "Scrabble v0.1 build 05200121alpha\n" +
+            "If it is your first time playing Scrabble, " +
+            "you are encouraged to read the rules.\n" +
+            "Warning: this version does not support blank tiles, challenges, and overtime, " +
+            "running a slightly modified casual rule set.";
 
     public ViewController(Game game) {
         this.game = game;
@@ -40,8 +47,10 @@ public class ViewController extends JFrame {
         }
         boardPanel.load();
         bottomPanel.load();
-        timer.start();
         statusPanel.update();
+        JOptionPane.showMessageDialog(this, welcomeMessage, "Welcome to Scrabble!",
+                JOptionPane.INFORMATION_MESSAGE, new ImageIcon(getClass().getResource("/images/tiles/S.png")));
+        timer.start();
     }
 
     public void createAndShowGUI() {
@@ -57,6 +66,10 @@ public class ViewController extends JFrame {
 
         bottomPanel.setControlListener((item) -> {
             switch (item) {
+                case 0 : {
+                    exchangeButton();
+                    break;
+                }
                 case 1 : {
                     recallButton();
                     break;
@@ -80,10 +93,7 @@ public class ViewController extends JFrame {
         skipTurnDialog = new SkipTurnDialog(this);
         gameOverDialog = new GameOverDialog(this);
 
-        timer = new Timer(1000, e -> {
-            sec++;
-            setTitle(String.format("%02d:%02d", sec / 60, sec % 60));
-        });
+        timer = new Timer(1000, this::countTime);
 
         gc.weightx = 1;
         gc.weighty = 1;
@@ -111,6 +121,7 @@ public class ViewController extends JFrame {
         setMinimumSize(new Dimension(600, 730));
     }
 
+
     private void boardClicked(int x, int y) {
         if (curRackTile != -1) {
             try {
@@ -122,7 +133,7 @@ public class ViewController extends JFrame {
             } catch (WrongPlacementException e) {
                 JOptionPane.showMessageDialog(this, e.getMessage(), "Wrong placement!", JOptionPane.ERROR_MESSAGE);
             }
-        } else {
+        } else if (!inExchange) {
             game.removeBufferedTileFromMove(x, y);
             boardPanel.removeTileFromCell(x, y);
             bottomPanel.update();
@@ -130,12 +141,32 @@ public class ViewController extends JFrame {
     }
 
     private void rackClicked(int tile) {
-        if (curRackTile == -1) {
-            curRackTile = tile;
-            bottomPanel.addBorder(tile);
+        if (!inExchange) {
+            if (curRackTile == -1) {
+                curRackTile = tile;
+                bottomPanel.addBorder(tile);
+            } else {
+                curRackTile = -1;
+                bottomPanel.update();
+            }
         } else {
-            curRackTile = -1;
+            if (game.isExchanged(tile)) {
+                game.removeTileFromExchange(tile);
+                bottomPanel.removeBorder(tile);
+            } else {
+                game.addTileToExchange(tile);
+                bottomPanel.addBorder(tile);
+            }
+        }
+    }
+
+    private void exchangeButton() {
+        curRackTile = -1;
+        toggleExchange();
+        if (game.inExchange()) {
+            game.commitExchange();
             bottomPanel.update();
+            nextPlayer();
         }
     }
 
@@ -165,21 +196,29 @@ public class ViewController extends JFrame {
         game.nextPlayer();
 
         if (game.isGameOver()) {
-            game.endGame();
-            timer.stop();
-            gameOverDialog.showWithScores(game.getScore(0), game.getScore(1));
-            if (gameOverDialog.isRestart()) {
-                game.reset();
-                sec = 0;
-                timer.restart();
-                boardPanel.updateBoard();
-            } else {
-                dispose();
-            }
+            finishGame();
+        } else {
+            JOptionPane.showMessageDialog(this, "Player " + game.getCurPlayer() + ": it's your turn!",
+                    "Change player", JOptionPane.INFORMATION_MESSAGE);
         }
         bottomPanel.update();
         statusPanel.update();
         curRackTile = -1;
+        inExchange = false;
+    }
+
+    private void finishGame() {
+        game.endGame();
+        timer.stop();
+        gameOverDialog.showWithScores(game.getScore(0), game.getScore(1));
+        if (gameOverDialog.isRestart()) {
+            game.reset();
+            sec = 0;
+            timer.restart();
+            boardPanel.updateBoard();
+        } else {
+            dispose();
+        }
     }
 
     private void clearBuffers() {
@@ -190,5 +229,16 @@ public class ViewController extends JFrame {
         if (game.inExchange()) {
             game.clearExchange();
         }
+    }
+
+    private void toggleExchange() {
+        inExchange = !inExchange;
+        bottomPanel.update();
+        bottomPanel.toggleExchange();
+    }
+
+    private void countTime(ActionEvent e) {
+        sec++;
+        setTitle(String.format("%02d:%02d", sec / 60, sec % 60));
     }
 }
