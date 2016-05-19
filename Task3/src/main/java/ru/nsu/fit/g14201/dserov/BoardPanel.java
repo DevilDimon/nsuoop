@@ -93,7 +93,7 @@ public class BoardPanel extends JPanel implements ActionListener {
         try {
             BufferedImage img = ImageIO.read(getClass().getResourceAsStream("/images/tiles/"
                     + ScrabbleUtils.getNameByInt(imgNum) + ".png"));
-            return new ImageIcon(img.getScaledInstance(50, 50, Image.SCALE_SMOOTH));
+            return new ImageIcon(img.getScaledInstance(40, 40, Image.SCALE_SMOOTH));
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -150,6 +150,10 @@ public class BoardPanel extends JPanel implements ActionListener {
 
     public void assignTileToCell(int tileLetter, int x, int y) {
         cellButtons[x][y].setIcon(images[tileLetter]);
+    }
+
+    public void removeTileFromCell(int x, int y) {
+        cellButtons[x][y].setIcon(getUnoccupiedImage(x, y));
     }
 
     public void setBoardListener(BoardListener listener) {

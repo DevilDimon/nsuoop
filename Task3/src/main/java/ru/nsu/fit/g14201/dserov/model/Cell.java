@@ -70,6 +70,6 @@ public class Cell implements Comparable<Cell> {
 
     @Override
     public int compareTo(Cell o) {
-        return (getX() >= o.getX()) ? Integer.compare(getX(), o.getX()) : Integer.compare(getY(), o.getY());
+        return (getX() != o.getX()) ? Integer.compare(getX(), o.getX()) : Integer.compare(getY(), o.getY());
     }
 }

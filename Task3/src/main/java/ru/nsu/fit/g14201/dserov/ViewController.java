@@ -1,6 +1,7 @@
 package ru.nsu.fit.g14201.dserov;
 
 import ru.nsu.fit.g14201.dserov.model.Game;
+import ru.nsu.fit.g14201.dserov.model.ScrabbleException;
 import ru.nsu.fit.g14201.dserov.model.WrongPlacementException;
 
 import javax.swing.*;
@@ -56,8 +57,19 @@ public class ViewController extends JFrame {
 
         bottomPanel.setControlListener((item) -> {
             switch (item) {
+                case 1 : {
+                    recallButton();
+                    break;
+                }
                 case 2 : {
                     skipTurnButton();
+                    break;
+                }
+                case 3 : {
+                    nextTurnButton();
+                    break;
+                }
+                default: {
                     break;
                 }
             }
@@ -106,10 +118,15 @@ public class ViewController extends JFrame {
                 String tileChar = game.getTileChar(curRackTile);
                 boardPanel.assignTileToCell(ScrabbleUtils.getIntByName(tileChar), x, y);
                 curRackTile = -1;
+                bottomPanel.update();
             } catch (WrongPlacementException e) {
-                // TODO: dialog
+                JOptionPane.showMessageDialog(this, e.getMessage(), "Wrong placement!", JOptionPane.ERROR_MESSAGE);
             }
-        } // TODO: finish
+        } else {
+            game.removeBufferedTileFromMove(x, y);
+            boardPanel.removeTileFromCell(x, y);
+            bottomPanel.update();
+        }
     }
 
     private void rackClicked(int tile) {
@@ -118,43 +135,60 @@ public class ViewController extends JFrame {
             bottomPanel.addBorder(tile);
         } else {
             curRackTile = -1;
-            // TODO: add remove border
             bottomPanel.update();
         }
+    }
+
+    private void recallButton() {
+        clearBuffers();
+        bottomPanel.update();
     }
 
     private void skipTurnButton() {
         skipTurnDialog.setVisible(true);
         if (skipTurnDialog.isSkip()) {
-            if (game.inMove()) {
-                game.clearMove();
-                boardPanel.updateBoard();
-            }
-            if (game.inExchange()) {
-                game.clearExchange();
-            }
+            clearBuffers();
             nextPlayer();
         }
     }
 
-    // TODO: nextTurnButton
+    private void nextTurnButton() {
+        try {
+            game.commitMove();
+            nextPlayer();
+        } catch (ScrabbleException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Invalid turn!", JOptionPane.ERROR_MESSAGE);
+        }
+    }
 
     private void nextPlayer() {
         game.nextPlayer();
 
         if (game.isGameOver()) {
             game.endGame();
+            timer.stop();
             gameOverDialog.showWithScores(game.getScore(0), game.getScore(1));
             if (gameOverDialog.isRestart()) {
                 game.reset();
+                sec = 0;
+                timer.restart();
                 boardPanel.updateBoard();
             } else {
-                timer.stop();
                 dispose();
             }
         }
         bottomPanel.update();
         statusPanel.update();
         curRackTile = -1;
+    }
+
+    private void clearBuffers() {
+        if (game.inMove()) {
+            game.clearMove();
+            boardPanel.updateBoard();
+        }
+        if (game.inExchange()) {
+            game.clearExchange();
+        }
     }
 }

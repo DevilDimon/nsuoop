@@ -11,7 +11,6 @@ import java.awt.event.ActionListener;
  * Created by dserov on 03/05/16.
  */
 public class BottomPanel extends JPanel implements ControlListener, RackListener {
-    private Game game;
 
     private RackPanel rackPanel;
     private ControlPanel controlPanel;
@@ -24,6 +23,7 @@ public class BottomPanel extends JPanel implements ControlListener, RackListener
         controlPanel = new ControlPanel(game);
         setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10));
         setBackground(new Color(7, 89, 79));
+        // TODO: a Table to prevent rearranging
         add(rackPanel);
         add(controlPanel);
     }

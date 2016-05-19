@@ -119,5 +119,7 @@ public class ControlPanel extends JPanel implements ActionListener {
 
     public void update() {
         controlButtons[0].setText("" + game.getBagSize());
+        controlButtons[0].setEnabled(game.canExchange());
+        controlButtons[3].setEnabled(game.inMove());
     }
 }

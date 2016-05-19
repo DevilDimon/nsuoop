@@ -7,6 +7,6 @@ import ru.nsu.fit.g14201.dserov.model.ScrabbleException;
  */
 public class NoSuchWordException extends ScrabbleException {
     public NoSuchWordException(String word) {
-        super("The word \"" + "\" is not in the dictionary.");
+        super("The word \"" + word + "\" is not in the dictionary.");
     }
 }

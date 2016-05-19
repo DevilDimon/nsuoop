@@ -51,20 +51,8 @@ public class Game {
         curPlayer = 1 - curPlayer;
     }
 
-    public boolean isCurHuman() {
-        return players[curPlayer].isHuman();
-    }
-
-    public boolean canExchange() {
-        return (players[curPlayer].getRackSize() == 7 && bag.getSize() > 0 && curMove.getSize() == 0);
-    }
-
-    public boolean isExchanged(int tileIndex) {
-        return exchangeBuffer.contains(players[curPlayer].getFromRack(tileIndex));
-    }
-
-    public boolean isGameOver() { // TODO! GET BACK!
-        if (skipCount == 2 || (bag.getSize() == 0 && (players[0].getRackSize() == 0 || players[1].getRackSize() == 0))) {
+    public boolean isGameOver() { // TODO: RESTORE SKIP COUNT!
+        if (skipCount == 3 || (bag.getSize() == 0 && (players[0].getRackSize() == 0 || players[1].getRackSize() == 0))) {
             return true;
         }
         else return false;
@@ -106,7 +94,7 @@ public class Game {
         curMove.add(board.getCell(x, y), players[curPlayer].getFromRack(tileIndex));
     }
 
-    public void removeTileFromMove(int x, int y) {
+    public void removeBufferedTileFromMove(int x, int y) {
         if (!board.isOccupied(x, y)) {
             curMove.remove(board.getCell(x, y));
         }
@@ -117,7 +105,7 @@ public class Game {
     }
 
     public void commitMove() throws ScrabbleException {
-        scores[curPlayer] += curMove.evalMove(board, dict, (turn == 0));
+        scores[curPlayer] += curMove.evalMove(board, dict, !isOccupied(7, 7));
         for (Tile t : curMove.tiles()) {
             players[curPlayer].removeFromRack(t);
         }
@@ -181,6 +169,18 @@ public class Game {
 
     public boolean inExchange() {
         return exchangeBuffer.isEmpty();
+    }
+
+    public boolean isCurHuman() {
+        return players[curPlayer].isHuman();
+    }
+
+    public boolean canExchange() {
+        return (players[curPlayer].getRackSize() == 7 && bag.getSize() > 0 && curMove.getSize() == 0);
+    }
+
+    public boolean isExchanged(int tileIndex) {
+        return exchangeBuffer.contains(players[curPlayer].getFromRack(tileIndex));
     }
 
     public boolean isTilePlayed(int tileIndex) {

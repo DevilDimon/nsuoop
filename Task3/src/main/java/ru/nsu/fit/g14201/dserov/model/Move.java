@@ -52,7 +52,7 @@ public class Move {
         }
     }
 
-    public int evalMove(Board board, ru.nsu.fit.g14201.dserov.model.Dictionary dict, boolean first) throws ScrabbleException {
+    public int evalMove(Board board, Dictionary dict, boolean first) throws ScrabbleException {
         ArrayList<Cell> cells = new ArrayList<>(buffer.keySet());
         int size = cells.size();
         int x = cells.get(0).getX();
@@ -62,13 +62,13 @@ public class Move {
             // check direction consistency & H8 coverage for the first turn
             int direction = (y == cells.get(1).getY()) ? 1 : 0;
             boolean h8covered = false;
-            for (int i = 1; i < size; i++) {
+            for (int i = 0; i < size; i++) {
                 if (direction == 1) {
                     if (y != cells.get(i).getY()) throw new WrongPlacementException("The tiles should maintain a common direction.");
                 } else {
                     if (x != cells.get(i).getX()) throw new WrongPlacementException("The tiles should maintain a common direction.");
                 }
-                if (first && cells.get(i).getX() == 7 && cells.get(i).getY() == 7) h8covered = true;
+                if (cells.get(i).getX() == 7 && cells.get(i).getY() == 7) h8covered = true;
             }
             if (first && !h8covered) throw new WrongPlacementException("The first turn should cover the central cell.");
 
@@ -91,6 +91,7 @@ public class Move {
 
         // build words
         Set<List<Integer>> coords = new HashSet<>();
+        boolean adjacent = false;
         for (Cell c : cells) {
             int xc = c.getX();
             int yc = c.getY();
@@ -100,11 +101,13 @@ public class Move {
 
             int i = xc;
             while (i >= 0 && (board.isOccupied(i, yc) || cells.contains(board.getCell(i, yc)))) {
+                adjacent |= board.isOccupied(i, yc);
                 x1 = i;
                 i--;
             }
             i = xc;
             while (i < 15 && (board.isOccupied(i, yc) || cells.contains(board.getCell(i, yc)))) {
+                adjacent |= board.isOccupied(i, yc);
                 x2 = i;
                 i++;
             }
@@ -116,11 +119,13 @@ public class Move {
 
             i = yc;
             while (i >= 0 && (board.isOccupied(xc, i) || cells.contains(board.getCell(xc, i)))) {
+                adjacent |= board.isOccupied(xc, i);
                 y1 = i;
                 i--;
             }
             i = yc;
             while (i < 15 && (board.isOccupied(xc, i) || cells.contains(board.getCell(xc, i)))) {
+                adjacent |= board.isOccupied(xc, i);
                 y2 = i;
                 i++;
             }
@@ -130,7 +135,7 @@ public class Move {
                 else coords.add(Arrays.asList(xc, y1, xc, y2));
             }
         }
-        if (!first && coords.size() == 1) throw new WrongPlacementException("Standalone words are not allowed.");
+        if (!first && !adjacent) throw new WrongPlacementException("Standalone words are not allowed.");
 
         // evaluate words
         int res = 0;
