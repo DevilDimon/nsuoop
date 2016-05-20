@@ -55,6 +55,7 @@ public class ViewController extends JFrame {
 
     public void createAndShowGUI() {
         setTitle("Scrabble v0.1");
+        setIconImage((new ImageIcon(getClass().getResource("/images/tiles/S.png")).getImage()));
         setLayout(new GridBagLayout());
         getContentPane().setBackground(new Color(7, 89, 79));
         GridBagConstraints gc = new GridBagConstraints();
@@ -135,7 +136,9 @@ public class ViewController extends JFrame {
             }
         } else if (!inExchange) {
             game.removeBufferedTileFromMove(x, y);
-            boardPanel.removeTileFromCell(x, y);
+            if (!game.isOccupied(x, y)) {
+                boardPanel.removeTileFromCell(x, y);
+            }
             bottomPanel.update();
         }
     }
